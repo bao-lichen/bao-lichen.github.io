@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>包黎晨 | 爱运动·爱音乐·爱生活</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+:root{--bg:#0A0A0B;--surface:rgba(255,255,255,0.04);--surface-hover:rgba(255,255,255,0.08);--border:rgba(255,255,255,0.08);--text:#F0EDE6;--muted:rgba(240,237,230,0.45);--accent:#C9A96E;--accent-glow:rgba(201,169,110,0.2);--accent2:#6EC6B0;--sidebar-w:260px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) var(--bg)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none}
+.cursor{width:18px;height:18px;border:1.5px solid var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:10000;transition:transform .15s,background .15s,border-color .15s;transform:translate(-50%,-50%)}
+.cursor.hover{transform:translate(-50%,-50%) scale(2.2);background:var(--accent-glow)}
+.cursor-dot{width:4px;height:4px;background:var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:10001;transform:translate(-50%,-50%)}
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+.p{position:absolute;width:2px;height:2px;background:rgba(201,169,110,0.3);border-radius:50%;animation:float-p linear infinite}
+@keyframes float-p{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100vh) translateX(30px);opacity:0}}
+.layout{display:flex;min-height:100vh;position:relative;z-index:1}
+.sidebar{width:var(--sidebar-w);min-height:100vh;position:fixed;top:0;left:0;background:rgba(10,10,11,0.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-right:1px solid var(--border);padding:0 20px;display:flex;flex-direction:column;z-index:100}
+.sidebar-inner{padding:36px 0;display:flex;flex-direction:column;height:100%}
+.avatar-zone{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:36px}
+.avatar-ring{width:104px;height:104px;border-radius:50%;position:relative;margin-bottom:14px}
+.avatar-ring::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent2),var(--accent));animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.avatar-ring-inner{width:100%;height:100%;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden}
+.avatar-ring-inner img{width:100%;height:100%;object-fit:cover}
+.sidebar-name{font-family:'Noto Serif SC',serif;font-size:17px;font-weight:600;color:var(--text);margin-bottom:4px;letter-spacing:1px}
+.sidebar-sub{font-size:11px;color:var(--muted);letter-spacing:.5px}
+.sidebar-nav{flex:1;display:flex;flex-direction:column;gap:3px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;text-decoration:none;color:var(--muted);font-size:13.5px;font-weight:500;letter-spacing:.3px;transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.nav-item::before{content:'';position:absolute;left:0;top:0;width:0;height:100%;background:linear-gradient(90deg,var(--accent-glow),transparent);transition:width .3s ease;border-radius:0 10px 10px 0}
+.nav-item:hover{color:var(--text)}
+.nav-item:hover::before{width:100%}
+.nav-item.active{color:var(--accent)}
+.nav-item.active::before{width:100%;background:linear-gradient(90deg,var(--accent-glow),transparent)}
+.nav-item .n{font-size:15px;width:22px;text-align:center;position:relative;z-index:1}
+.nav-item .t{position:relative;z-index:1}
+.sidebar-social{display:flex;gap:10px;justify-content:center;padding:20px 0 8px;border-top:1px solid var(--border)}
+.soc{width:34px;height:34px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;color:var(--muted);transition:all .3s ease}
+.soc:hover{background:var(--accent);border-color:var(--accent);color:#0A0A0B;transform:translateY(-2px);box-shadow:0 4px 16px var(--accent-glow)}
+.main{margin-left:var(--sidebar-w);flex:1;padding:0 80px;max-width:960px}
+section{padding:80px 0;position:relative}
+section:last-child{border-bottom:none}
+.section-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;max-width:40px;height:1px;background:var(--accent)}
+.section-title{font-family:'Noto Serif SC',serif;font-size:36px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:40px}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:0;padding-bottom:0;position:relative}
+.hero-eyebrow{font-size:clamp(28px,4vw,36px);letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;opacity:0;animation:fadeUp .8s ease .2s forwards;font-family:'Space Grotesk','Noto Serif SC',sans-serif;font-weight:700}
+.hero h1{font-family:'Space Grotesk','Noto Serif SC',sans-serif;font-size:clamp(40px,6vw,72px);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:24px;overflow:hidden}
+.hero h1 .line{display:block;opacity:0;animation:slideUp .9s cubic-bezier(.4,0,.2,1) forwards}
+.hero h1 .line:nth-child(1){animation-delay:.3s}
+.hero h1 .line:nth-child(2){animation-delay:.5s}
+.hero h1 .gold{color:var(--accent)}
+.hero-desc{font-size:16px;color:var(--muted);max-width:480px;line-height:1.9;margin-bottom:32px;opacity:0;animation:fadeUp .8s ease .8s forwards}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap;opacity:0;animation:fadeUp .8s ease 1s forwards}
+.htag{padding:7px 16px;border:1px solid var(--border);border-radius:9999px;font-size:12px;color:var(--muted);background:var(--surface);backdrop-filter:blur(8px);transition:all .3s ease;cursor:none}
+.htag:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow);transform:translateY(-2px)}
+.hero-scroll{position:absolute;bottom:40px;left:0;display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);opacity:0;animation:fadeUp .8s ease 1.4s forwards}
+.hero-scroll::before{content:'';width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollLine 2s ease-in-out infinite}
+@keyframes scrollLine{0%,100%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.4,0,.2,1),transform .8s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal.delay-1{transition-delay:.1s}
+.reveal.delay-2{transition-delay:.2s}
+.reveal.delay-3{transition-delay:.3s}
+.reveal.delay-4{transition-delay:.4s}
+.about-grid{display:grid;grid-template-columns:1fr 280px;gap:48px;align-items:start}
+.about-text{font-size:15px;color:var(--muted);line-height:2}
+.about-text p+p{margin-top:18px}
+.about-stats{display:flex;flex-direction:column;gap:24px;padding:28px;background:var(--surface);border:1px solid var(--border);border-radius:16px}
+.stat-item{text-align:center}
+.stat-n{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:4px}
+.stat-l{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.exp-list{display:flex;flex-direction:column;gap:20px}
+.exp-card{padding:28px 32px;background:var(--surface);border:1px solid var(--border);border-radius:16px;display:grid;grid-template-columns:180px 1fr;gap:32px;align-items:start;transition:all .4s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.exp-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--accent);transition:height .4s ease}
+.exp-card:hover{background:var(--surface-hover);border-color:rgba(201,169,110,.2);transform:translateX(6px)}
+.exp-card:hover::before{height:100%}
+.exp-d{font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.5px;margin-bottom:4px;padding-top:3px}
+.exp-c{font-size:12px;color:var(--muted)}
+.exp-r{font-size:17px;font-weight:600;color:var(--text);margin-bottom:10px}
+.exp-desc{font-size:14px;color:var(--muted);line-height:1.75}
+.skills-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.skill-card{padding:22px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;text-align:center;font-size:13px;font-weight:500;color:var(--muted);transition:all .35s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;cursor:none}
+.skill-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--x,50%) var(--y,50%),var(--accent-glow),transparent 60%);opacity:0;transition:opacity .3s}
+.skill-card:hover{color:var(--accent);border-color:rgba(201,169,110,.3);transform:translateY(-4px) scale(1.03);box-shadow:0 8px 32px rgba(201,169,110,.1)}
+.skill-card:hover::after{opacity:1}
+.projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.proj-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:all .45s cubic-bezier(.4,0,.2,1);cursor:none}
+.proj-card:hover{transform:translateY(-6px) scale(1.01);border-color:rgba(201,169,110,.25);box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px var(--accent-glow)}
+.proj-img{height:170px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative;overflow:hidden}
+.proj-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,var(--bg))}
+.proj-body{padding:24px 26px}
+.proj-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px}
+.proj-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.proj-tags{display:flex;gap:6px;flex-wrap:wrap}
+.proj-tag{padding:3px 10px;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.15);border-radius:6px;font-size:11px;color:var(--accent)}
+.pub-list{display:flex;flex-direction:column;gap:16px}
+.pub-card{padding:24px 28px;background:var(--surface);border:1px solid var(--border);border-radius:14px;transition:all .35s ease}
+.pub-card:hover{background:var(--surface-hover);border-color:rgba(201,169,110,.2);transform:translateX(4px)}
+.pub-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.5}
+.pub-meta{font-size:12px;color:var(--accent);margin-bottom:8px;font-weight:500}
+.pub-desc{font-size:13px;color:var(--muted);line-height:1.75}
+.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.contact-card{display:flex;align-items:center;gap:16px;padding:22px 24px;background:var(--surface);border:1px solid var(--border);border-radius:14px;text-decoration:none;color:inherit;transition:all .35s ease;cursor:none}
+.contact-card:hover{background:var(--surface-hover);border-color:rgba(201,169,110,.3);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.c-icon{width:44px;height:44px;border-radius:12px;background:var(--accent-glow);border:1px solid rgba(201,169,110,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:all .3s ease}
+.contact-card:hover .c-icon{background:var(--accent);border-color:var(--accent);box-shadow:0 4px 16px var(--accent-glow)}
+.c-l{font-size:11px;color:var(--muted);margin-bottom:2px;letter-spacing:.5px}
+.c-v{font-size:14px;font-weight:500;color:var(--text)}
+.footer{padding:40px 0 32px;text-align:center;font-size:12px;color:var(--muted);border-top:1px solid var(--border)}
+.footer p{display:flex;align-items:center;justify-content:center;gap:8px}
+.footer .heart{color:var(--accent);animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+.glow-line{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.3}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr}.exp-card{grid-template-columns:1fr;gap:8px}.skills-grid{grid-template-columns:repeat(2,1fr)}.projects-grid{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}}
+@media(max-width:768px){body{cursor:auto}.cursor,.cursor-dot{display:none}.sidebar{width:100%;min-height:auto;position:relative;padding:0 16px}.sidebar-inner{padding:24px 0 16px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:16px}.avatar-zone{margin-bottom:0;flex-direction:row;gap:14px}.avatar-ring{width:50px;height:50px;margin-bottom:0}.avatar-ring-inner{font-size:22px}.sidebar-name{font-size:15px}.sidebar-sub{display:none}.sidebar-nav{flex-direction:row;flex-wrap:wrap}.nav-item{padding:7px 10px;font-size:12px}.sidebar-social{padding:0;border-top:none}.main{margin-left:0;padding:0 20px 40px}.hero h1{font-size:36px}.section-title{font-size:28px}}
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div id="particles"></div>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <div class="avatar-zone">
+        <div class="avatar-ring"><div class="avatar-ring-inner">🧑‍💻</div></div>
+        <div>
+          <div class="sidebar-name">包黎晨</div>
+          <div class="sidebar-sub">爱运动 · 爱音乐 · 爱生活</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#about" class="nav-item active"><span class="n">▸</span><span class="t">About</span></a>
+        <a href="#experience" class="nav-item"><span class="n">▸</span><span class="t">Experience</span></a>
+        <a href="#skills" class="nav-item"><span class="n">▸</span><span class="t">Skills</span></a>
+        <a href="#projects" class="nav-item"><span class="n">▸</span><span class="t">Projects</span></a>
+        <a href="#publications" class="nav-item"><span class="n">▸</span><span class="t">Publications</span></a>
+        <a href="#contact" class="nav-item"><span class="n">▸</span><span class="t">Contact</span></a>
+      </nav>
+      <div class="sidebar-social">
+        <a href="#" class="soc" title="GitHub">🐙</a>
+        <a href="#" class="soc" title="Twitter">𝕏</a>
+        <a href="#" class="soc" title="Email">✉</a>
+      </div>
+    </div>
+  </aside>
+  <main class="main">
+    <section class="hero" id="hero">
+      <div class="hero-eyebrow">Welcome to my world</div>
+      
+      <p class="hero-desc">爱运动 · 爱音乐 · 爱生活</p>
+      <div class="hero-tags">
+        <span class="htag">🏃 运动</span>
+        <span class="htag">🎸 音乐</span>
+        <span class="htag">💻 技术</span>
+        <span class="htag">✈️ 旅行</span>
+      </div>
+      <div class="hero-scroll">scroll</div>
+    </section>
+    <div class="glow-line"></div>
+    <section id="about">
+      <div class="section-label reveal">01 / About</div>
+      <h2 class="section-title reveal delay-1">我是谁</h2>
+      <div class="about-grid">
+        <div class="about-text reveal delay-2">
+          <p>我叫包黎晨，对软件开发和技术创新充满热情，目前走在不断探索AI的路上。</p>
+          <p>我热爱生活，喜欢在运动中释放压力——篮球、跑步、游泳都是我的日常。在音乐方面，我弹吉他，听各种风格的音乐，相信运动和音乐都能给人带来灵感和力量。</p>
+          <p>在这个网站上，你可以看到我的一些项目作品、学习笔记和技术分享，欢迎交流探讨！</p>
+        </div>
+        <div class="about-stats reveal delay-3">
+          <div class="stat-item"><div class="stat-n">3+</div><div class="stat-l">Years Coding</div></div>
+          <div class="stat-item"><div class="stat-n">10+</div><div class="stat-l">Projects</div></div>
+          <div class="stat-item"><div class="stat-n">∞</div><div class="stat-l">Curiosity</div></div>
+        </div>
+      </div>
+    </section>
+    <section id="experience">
+      <div class="glow-line reveal"></div>
+      <div style="padding-top:80px">
+        <div class="section-label reveal">02 / Experience</div>
+        <h2 class="section-title reveal delay-1">经历</h2>
+        <div class="exp-list">
+          <div class="exp-card reveal delay-2">
+            <div><div class="exp-d">2024 — 至今</div><div class="exp-c">Freelance</div></div>
+            <div><div class="exp-r">自由开发者</div><div class="exp-desc">为个人客户和小团队开发 Web 应用和自动化工具，涵盖前端开发、后端 API 和部署运维全栈流程。</div></div>
+          </div>
+          <div class="exp-card reveal delay-3">
+            <div><div class="exp-d">2023 — 2024</div><div class="exp-c">XX 大学</div></div>
+            <div><div class="exp-r">校园技术社团负责人</div><div class="exp-desc">组织技术分享会、编程竞赛和 workshops，带领团队完成多个校园信息化项目，服务超过 500 名同学。</div></div>
+          </div>
+          <div class="exp-card reveal delay-4">
+            <div><div class="exp-d">2022 — 2023</div><div class="exp-c">XX 科技公司</div></div>
+            <div><div class="exp-r">软件开发实习生</div><div class="exp-desc">参与公司核心产品的功能模块开发，负责前端组件设计与实现，积累了团队协作和敏捷开发的实战经验。</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="skills">
+      <div class="glow-line reveal"></div>
+      <div style="padding-top:80px">
+        <div class="section-label reveal">03 / Skills</div>
+        <h2 class="section-title reveal delay-1">技能</h2>
+        <div class="skills-grid">
+          <div class="skill-card reveal delay-1">🎨 前端开发</div>
+          <div class="skill-card reveal delay-2">⚙️ 后端开发</div>
+          <div class="skill-card reveal delay-3">🗄️ 数据库</div>
+          <div class="skill-card reveal delay-4">☁️ 云服务</div>
+          <div class="skill-card reveal delay-1">🔧 DevOps</div>
+          <div class="skill-card reveal delay-2">📱 移动端</div>
+          <div class="skill-card reveal delay-3">🤖 自动化</div>
+          <div class="skill-card reveal delay-4">🧪 测试</div>
+        </div>
+      </div>
+    </section>
+    <section id="projects">
+      <div class="glow-line reveal"></div>
+      <div style="padding-top:80px">
+        <div class="section-label reveal">04 / Projects</div>
+        <h2 class="section-title reveal delay-1">作品</h2>
+        <div class="projects-grid">
+          <div class="proj-card reveal delay-1">
+            <div class="proj-img" style="background:linear-gradient(135deg,#1a1520,#2d1f3d)">🧩</div>
+            <div class="proj-body">
+              <div class="proj-title">个人博客系统</div>
+              <div class="proj-desc">基于 Node.js + React 开发的个人技术博客，支持 Markdown 写作、标签分类和全文搜索。</div>
+              <div class="proj-tags"><span class="proj-tag">React</span><span class="proj-tag">Node.js</span><span class="proj-tag">MongoDB</span></div>
+            </div>
+          </div>
+          <div class="proj-card reveal delay-2">
+            <div class="proj-img" style="background:linear-gradient(135deg,#0f1f1a,#1a3d30)">📊</div>
+            <div class="proj-body">
+              <div class="proj-title">数据可视化平台</div>
+              <div class="proj-desc">将复杂数据以图表、地图等形式直观展示，支持多维度筛选和实时更新。</div>
+              <div class="proj-tags"><span class="proj-tag">Vue.js</span><span class="proj-tag">D3.js</span><span class="proj-tag">Python</span></div>
+            </div>
+          </div>
+          <div class="proj-card reveal delay-3">
+            <div class="proj-img" style="background:linear-gradient(135deg,#1a1a0f,#3d3010)">🤖</div>
+            <div class="proj-body">
+              <div class="proj-title">自动化脚本工具</div>
+              <div class="proj-desc">日常办公自动化脚本集合，批量处理文件、定时任务、消息推送等场景。</div>
+              <div class="proj-tags"><span class="proj-tag">Python</span><span class="proj-tag">Shell</span><span class="proj-tag">cron</span></div>
+            </div>
+          </div>
+          <div class="proj-card reveal delay-4">
+            <div class="proj-img" style="background:linear-gradient(135deg,#0f1a1f,#10293d)">🎵</div>
+            <div class="proj-body">
+              <div class="proj-title">音乐播放器</div>
+              <div class="proj-desc">简洁美观的本地音乐播放器，支持播放列表、歌词同步显示和均衡器调节。</div>
+              <div class="proj-tags"><span class="proj-tag">Electron</span><span class="proj-tag">JS</span><span class="proj-tag">Web Audio</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="publications">
+      <div class="glow-line reveal"></div>
+      <div style="padding-top:80px">
+        <div class="section-label reveal">05 / Publications</div>
+        <h2 class="section-title reveal delay-1">文章</h2>
+        <div class="pub-list">
+          <div class="pub-card reveal delay-1">
+            <div class="pub-title">《从前端到全栈：我的开发者成长之路》</div>
+            <div class="pub-meta">个人博客 · 2024年12月</div>
+            <div class="pub-desc">回顾自己从前端入门到全栈发展的学习路径，总结每个阶段的关键转折点和踩过的坑。</div>
+          </div>
+          <div class="pub-card reveal delay-2">
+            <div class="pub-title">《如何用自动化脚本提升日常效率》</div>
+            <div class="pub-meta">技术社区 · 2024年8月</div>
+            <div class="pub-desc">分享几个实用的办公自动化案例，演示如何用 Python 脚本处理重复性工作。</div>
+          </div>
+          <div class="pub-card reveal delay-3">
+            <div class="pub-title">《运动与编程：两种技能的双向启发》</div>
+            <div class="pub-meta">个人博客 · 2024年5月</div>
+            <div class="pub-desc">探讨运动中培养的专注力和抗压能力如何迁移到编程学习中，相辅相成。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="contact">
+      <div class="glow-line reveal"></div>
+      <div style="padding-top:80px">
+        <div class="section-label reveal">06 / Contact</div>
+        <h2 class="section-title reveal delay-1">联系</h2>
+        <div class="contact-grid">
+          <a href="mailto:example@email.com" class="contact-card reveal delay-1">
+            <div class="c-icon">✉</div>
+            <div><div class="c-l">Email</div><div class="c-v">example@email.com</div></div>
+          </a>
+          <a href="#" class="contact-card reveal delay-2">
+            <div class="c-icon">🐙</div>
+            <div><div class="c-l">GitHub</div><div class="c-v">@username</div></div>
+          </a>
+          <a href="#" class="contact-card reveal delay-3">
+            <div class="c-icon">𝕏</div>
+            <div><div class="c-l">Twitter</div><div class="c-v">@username</div></div>
+          </a>
+          <a href="#" class="contact-card reveal delay-4">
+            <div class="c-icon">📍</div>
+            <div><div class="c-l">Location</div><div class="c-v">中国</div></div>
+          </a>
+        </div>
+      </div>
+    </section>
+    <div class="footer">
+      <p>© 2026 包黎晨 <span class="heart">♥</span> 用代码构建</p>
+    </div>
+  </main>
+</div>
+<script>
+(function(){
+  var c=document.getElementById('particles');
+  for(var i=0;i<40;i++){
+    var p=document.createElement('div');
+    p.className='p';
+    p.style.left=Math.random()*100+'%';
+    p.style.top=Math.random()*100+'%';
+    p.style.animationDuration=(8+Math.random()*12)+'s';
+    p.style.animationDelay=Math.random()*10+'s';
+    p.style.width=p.style.height=(1+Math.random()*2)+'px';
+    c.appendChild(p);
+  }
+  var cursor=document.getElementById('cursor');
+  var dot=document.getElementById('cursorDot');
+  var mx=0,my=0,cx=0,cy=0;
+  document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
+  function tick(){cx+=(mx-cx)*0.18;cy+=(my-cy)*0.18;dot.style.left=mx+'px';dot.style.top=my+'px';cursor.style.left=cx+'px';cursor.style.top=cy+'px';requestAnimationFrame(tick);}
+  tick();
+  var hov=document.querySelectorAll('a,button,.skill-card,.proj-card,.contact-card,.htag,.pub-card,.exp-card');
+  hov.forEach(function(el){el.addEventListener('mouseenter',function(){cursor.classList.add('hover')});el.addEventListener('mouseleave',function(){cursor.classList.remove('hover')});});
+  var els=document.querySelectorAll('.reveal');
+  var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  els.forEach(function(el){io.observe(el);});
+  var secs=document.querySelectorAll('section[id]');
+  var navs=document.querySelectorAll('.nav-item');
+  function set(){var cur='';secs.forEach(function(s){if(window.scrollY>=s.offsetTop-120)cur=s.id;});navs.forEach(function(n){n.classList.remove('active');if(n.getAttribute('href')==='#'+cur)n.classList.add('active');});}
+  window.addEventListener('scroll',set,{passive:true});set();
+  var cards=document.querySelectorAll('.skill-card');
+  cards.forEach(function(card){card.addEventListener('mousemove',function(e){var r=card.getBoundingClientRect();card.style.setProperty('--x',((e.clientX-r.left)/r.width*100)+'%');card.style.setProperty('--y',((e.clientY-r.top)/r.height*100)+'%');});});
+})();
+</script>
+</body>
+</html>
