@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 资讯日报</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --surface: #151820;
+    --border: #1e2330;
+    --text: #e2e8f0;
+    --text-dim: #64748b;
+    --accent: #f59e0b;
+    --accent-dim: rgba(245,158,11,0.1);
+    --c-36kr: #e85d4a;
+    --c-ithome: #4a9eed;
+    --c-qbitai: #7c3aed;
+    --c-hf: #f59e0b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Serif SC', serif;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .logo-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .logo-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-top: 0.25rem;
+  }
+
+  .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  .meta span { color: var(--accent); }
+
+  /* ── Layout ── */
+  .container {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: calc(100vh - 100px);
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    padding: 0 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .date-item {
+    padding: 0.6rem 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .date-item:hover { color: var(--text); background: var(--surface); }
+
+  .date-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .date-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* ── Main Content ── */
+  .main {
+    padding: 2rem 3rem;
+    max-width: 900px;
+  }
+
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .day-date {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .day-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+  }
+
+  /* ── Source Section ── */
+  .source-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .source-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .source-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .source-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+
+  .source-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-left: auto;
+  }
+
+  /* ── Article Item ── */
+  .article {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .article:last-child { border-bottom: none; }
+
+  .article:hover { padding-left: 0.75rem; }
+
+  .article::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    transition: width 0.15s;
+  }
+
+  .article:hover::before { width: 2px; }
+
+  .article-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    padding-top: 0.15rem;
+    flex-shrink: 0;
+    width: 1.5rem;
+  }
+
+  .article-body { flex: 1; }
+
+  .article-title {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text);
+    transition: color 0.15s;
+  }
+
+  .article:hover .article-title { color: var(--accent); }
+
+  .article-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-top: 0.25rem;
+  }
+
+  .article-arrow {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    padding-top: 0.15rem;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .article:hover .article-arrow { opacity: 1; }
+
+  /* ── Source colors ── */
+  .s-36kr   { color: var(--c-36kr); }
+  .s-ithome { color: var(--c-ithome); }
+  .s-qbitai { color: var(--c-qbitai); }
+  .s-hf     { color: var(--c-hf); }
+
+  .dot-36kr   { background: var(--c-36kr); }
+  .dot-ithome { background: var(--c-ithome); }
+  .dot-qbitai { background: var(--c-qbitai); }
+  .dot-hf     { background: var(--c-hf); }
+
+  .art-36kr::before   { background: var(--c-36kr); }
+  .art-ithome::before { background: var(--c-ithome); }
+  .art-qbitai::before { background: var(--c-qbitai); }
+  .art-hf::before     { background: var(--c-hf); }
+
+  /* ── Empty / Loading ── */
+  .state-msg {
+    padding: 4rem 0;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .dot-anim { display: inline-block; animation: blink 1s infinite; }
+  .dot-anim:nth-child(2) { animation-delay: 0.2s; }
+  .dot-anim:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.2; }
+    40% { opacity: 1; }
+  }
+
+  @media (max-width: 640px) {
+    .container { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    header, .main { padding-left: 1.25rem; padding-right: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo-label">AI · Daily · Digest</div>
+    <div class="logo-title">AI 资讯日报</div>
+  </div>
+  <div class="meta">
+    归档天数 <span id="totalDays">—</span> 天<br>
+    最新一期 <span id="latestDate">—</span>
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="sidebar-label">日期归档</div>
+    <div id="dateList"></div>
+  </aside>
+
+  <main class="main" id="mainContent">
+    <div class="state-msg">加载中<span class="dot-anim">.</span><span class="dot-anim">.</span><span class="dot-anim">.</span></div>
+  </main>
+</div>
+
+<script>
+const DATA_URL = "https://raw.githubusercontent.com/bao-lichen/ai-news-digest/main/news.json";
+
+const SOURCE_CONFIG = {
+  "36氪":        { cls: "36kr",   label: "36氪" },
+  "IT之家":      { cls: "ithome", label: "IT之家" },
+  "量子位":      { cls: "qbitai", label: "量子位" },
+  "HuggingFace": { cls: "hf",     label: "HuggingFace" },
+};
+
+let days = [];
+let currentDate = null;
+
+async function loadData() {
+  try {
+    const res = await fetch(DATA_URL + "?t=" + Date.now());
+    const json = await res.json();
+    days = json.days.slice().reverse(); // 最新在前
+    buildSidebar();
+    if (days.length > 0) showDay(days[0].date);
+    document.getElementById("totalDays").textContent = days.length;
+    document.getElementById("latestDate").textContent = days[0]?.date || "—";
+  } catch(e) {
+    document.getElementById("mainContent").innerHTML =
+      '<div class="state-msg">数据加载失败，请检查网络连接</div>';
+  }
+}
+
+function buildSidebar() {
+  const list = document.getElementById("dateList");
+  list.innerHTML = days.map(d => `
+    <div class="date-item" data-date="${d.date}" onclick="showDay('${d.date}')">
+      <span class="date-dot"></span>
+      ${d.date}
+    </div>`).join("");
+}
+
+function showDay(date) {
+  currentDate = date;
+
+  // 更新侧边栏高亮
+  document.querySelectorAll(".date-item").forEach(el => {
+    el.classList.toggle("active", el.dataset.date === date);
+  });
+
+  const day = days.find(d => d.date === date);
+  if (!day) return;
+
+  const totalArticles = day.sources.reduce((sum, s) => sum + s.articles.length, 0);
+
+  let html = `
+    <div class="day-header">
+      <div class="day-date">${date}</div>
+      <div class="day-count">共 ${totalArticles} 条资讯</div>
+    </div>`;
+
+  for (const source of day.sources) {
+    if (!source.articles || source.articles.length === 0) continue;
+    const cfg = SOURCE_CONFIG[source.name] || { cls: "36kr", label: source.name };
+
+    html += `
+      <div class="source-section">
+        <div class="source-header">
+          <span class="source-dot dot-${cfg.cls}"></span>
+          <span class="source-name s-${cfg.cls}">${cfg.label}</span>
+          <span class="source-count">${source.articles.length} 条</span>
+        </div>`;
+
+    source.articles.forEach((article, i) => {
+      html += `
+        <a class="article art-${cfg.cls}" href="${escHtml(article.url)}" target="_blank" rel="noopener">
+          <span class="article-num">${String(i+1).padStart(2,'0')}</span>
+          <div class="article-body">
+            <div class="article-title">${escHtml(article.title)}</div>
+            ${article.date ? `<div class="article-date">${article.date}</div>` : ''}
+          </div>
+          <span class="article-arrow">↗</span>
+        </a>`;
+    });
+
+    html += `</div>`;
+  }
+
+  document.getElementById("mainContent").innerHTML = html;
+}
+
+function escHtml(str) {
+  return String(str||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+loadData();
+</script>
+</body>
+</html>
