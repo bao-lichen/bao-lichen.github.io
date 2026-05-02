@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图片搜索 — 包黎晨</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface-hover: #181818;
+    --border: rgba(255,255,255,0.07);
+    --accent: #c9a96e;
+    --accent-glow: rgba(201,169,110,0.15);
+    --text: #e8e0d0;
+    --muted: #6b6560;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+
+  .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .back-link:hover { color: var(--accent); }
+  .back-link::before { content: '←'; }
+
+  .header-title {
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .hero {
+    padding: 80px 48px 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .label {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 48px;
+    font-family: 'Noto Serif SC', serif;
+  }
+
+  .search-bar {
+    display: flex;
+    gap: 12px;
+    max-width: 680px;
+  }
+
+  .search-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 24px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-input::placeholder { color: var(--muted); }
+  .search-input:focus {
+    border-color: rgba(201,169,110,0.4);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .count-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+    min-width: 80px;
+    text-align: center;
+  }
+  .count-select:focus { border-color: rgba(201,169,110,0.4); }
+
+  .btn {
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 32px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn:hover {
+    background: #e0bf88;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201,169,110,0.25);
+  }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .main {
+    padding: 0 48px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .meta-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .meta-text {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .meta-text span { color: var(--accent); }
+
+  .download-all-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 20px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .download-all-btn:hover {
+    border-color: rgba(201,169,110,0.4);
+    color: var(--accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(201,169,110,0.2);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  }
+
+  .card-img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    background: #111;
+  }
+
+  .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card:hover img { transform: scale(1.05); }
+
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.8));
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: flex-end;
+    padding: 16px;
+  }
+  .card:hover .card-overlay { opacity: 1; }
+
+  .dl-btn {
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dl-btn:hover { background: #e0bf88; }
+  .dl-btn svg { width: 14px; height: 14px; }
+
+  .card-body {
+    padding: 14px 16px;
+  }
+
+  .card-author {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card-author img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .card-dims {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .state {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--muted);
+  }
+
+  .state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  .state-text {
+    font-size: 15px;
+    font-family: 'Noto Serif SC', serif;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .card.entering {
+    animation: fadeUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    header { padding: 20px 24px; }
+    .hero { padding: 48px 24px 32px; }
+    .main { padding: 0 24px 60px; }
+    .search-bar { flex-wrap: wrap; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="back-link">返回主页</a>
+  <span class="header-title">Image Search</span>
+</header>
+
+<div class="hero">
+  <div class="label">Tool / 图片工具</div>
+  <h1>图片搜索<br>& 下载</h1>
+  <p class="sub">输入任意关键词，搜索高质量图片并一键下载</p>
+
+  <div class="search-bar">
+    <input class="search-input" id="query" type="text" placeholder="植物、风景、建筑……" />
+    <select class="count-select" id="count">
+      <option value="12">12 张</option>
+      <option value="24" selected>24 张</option>
+      <option value="30">30 张</option>
+    </select>
+    <button class="btn" id="searchBtn" onclick="search()">搜索</button>
+  </div>
+</div>
+
+<div class="main">
+  <div id="metaBar" class="meta-bar" style="display:none">
+    <span class="meta-text" id="metaText"></span>
+    <button class="download-all-btn" onclick="downloadAll()">全部下载</button>
+  </div>
+  <div id="grid" class="grid"></div>
+  <div id="state" class="state">
+    <div class="state-icon">🔍</div>
+    <div class="state-text">搜索任意关键词，发现高质量图片</div>
+  </div>
+</div>
+
+<script>
+const ACCESS_KEY = 'WD4hT5xrgd5wxR_Lyu4IWNK8lOSx6D9bCcZAE1ggVEg';
+let results = [];
+
+document.getElementById('query').addEventListener('keydown', e => {
+  if (e.key === 'Enter') search();
+});
+
+async function search() {
+  const q = document.getElementById('query').value.trim();
+  if (!q) return;
+
+  const count = document.getElementById('count').value;
+  const btn = document.getElementById('searchBtn');
+  const grid = document.getElementById('grid');
+  const state = document.getElementById('state');
+  const metaBar = document.getElementById('metaBar');
+
+  btn.disabled = true;
+  btn.textContent = '搜索中…';
+  grid.innerHTML = '';
+  metaBar.style.display = 'none';
+  state.innerHTML = '<div class="spinner"></div><div class="state-text">正在搜索…</div>';
+  state.style.display = 'block';
+
+  try {
+    const res = await fetch(
+      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=${count}&orientation=landscape`,
+      { headers: { Authorization: `Client-ID ${ACCESS_KEY}` } }
+    );
+    const data = await res.json();
+    results = data.results || [];
+
+    state.style.display = 'none';
+
+    if (results.length === 0) {
+      state.innerHTML = '<div class="state-icon">😔</div><div class="state-text">没有找到相关图片，换个关键词试试</div>';
+      state.style.display = 'block';
+    } else {
+      document.getElementById('metaText').innerHTML =
+        `关键词 "<span>${q}</span>" · 共 <span>${data.total.toLocaleString()}</span> 张 · 显示前 ${results.length} 张`;
+      metaBar.style.display = 'flex';
+      renderGrid(results, q);
+    }
+  } catch (e) {
+    state.innerHTML = '<div class="state-icon">⚠️</div><div class="state-text">请求失败，请检查网络连接</div>';
+    state.style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '搜索';
+}
+
+function renderGrid(items, keyword) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  items.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'card entering';
+    card.style.animationDelay = `${i * 40}ms`;
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        <img src="${item.urls.small}" alt="${item.alt_description || keyword}" loading="lazy" />
+        <div class="card-overlay">
+          <button class="dl-btn" onclick="downloadOne('${item.urls.full}', '${keyword}-${i+1}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 3v13M7 11l5 5 5-5M3 21h18"/>
+            </svg>
+            下载
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-author">
+          <img src="${item.user.profile_image.small}" alt="${item.user.name}" />
+          ${item.user.name}
+        </div>
+        <div class="card-dims">${item.width} × ${item.height}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+async function downloadOne(url, filename) {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${filename}.jpg`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch {
+    window.open(url, '_blank');
+  }
+}
+
+function downloadAll() {
+  const q = document.getElementById('query').value.trim() || 'image';
+  results.forEach((item, i) => {
+    setTimeout(() => downloadOne(item.urls.full, `${q}-${i+1}`), i * 300);
+  });
+}
+</script>
+</body>
+</html>
