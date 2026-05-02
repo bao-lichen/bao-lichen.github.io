@@ -377,6 +377,7 @@
 <div class="results-bar">
   <div class="results-count">显示 <span id="showCount">0</span> 条</div>
   <div id="activeFiltersLabel"></div>
+  <button onclick="exportCSV()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 16px;color:#c9a96e;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.06em;transition:all .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">导出 CSV</button>
 </div>
 
 <div id="gridContainer">
@@ -540,6 +541,21 @@ document.addEventListener("keydown", e => {
 
 function escHtml(str) {
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function exportCSV() {
+  const items = getFiltered();
+  if (!items.length) { alert("没有可导出的数据"); return; }
+  const headers = ["id","prompt","subject","ability","grade","type","risk","source","date_added"];
+  const csv = [headers.join(","), ...items.map(p =>
+    headers.map(h => '"' + String(p[h]||"").replace(/"/g,'""') + '"').join(","))
+  ].join("\n");
+  const BOM = "\uFEFF";
+  const blob = new Blob([BOM + csv], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "k12-prompts-" + new Date().toISOString().slice(0,10) + ".csv";
+  a.click();
 }
 
 loadData();
