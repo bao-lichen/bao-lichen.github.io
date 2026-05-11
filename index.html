@@ -282,7 +282,7 @@ section:last-child{border-bottom:none}
       <div class="about-grid">
         <div class="about-text reveal delay-2">
           <p>我叫包黎晨，对技术创新充满热情，目前走在不断探索AI的路上。</p>
-          <p>我热爱生活，喜欢在运动中释放压力——篮球、健身、游泳都是我的日常。在音乐方面，我弹吉他，听各种风格的音乐，相信运动和音乐都能给人带来灵感和力量。</p>
+          <p>我热爱生活，喜欢在运动中释放压力——篮球、跑步、游泳都是我的日常。在音乐方面，我弹吉他，听各种风格的音乐，相信运动和音乐都能给人带来灵感和力量。</p>
           <p>在这个网站上，你可以看到我的一些项目作品、学习笔记和技术分享，欢迎交流探讨！</p>
         </div>
         <div class="about-stats reveal delay-3">
@@ -304,7 +304,7 @@ section:last-child{border-bottom:none}
           </div>
           <div class="exp-card reveal delay-3">
             <div><div class="exp-d">2025.08 — 2025.10</div><div class="exp-c">网易有道</div></div>
-            <div><div class="exp-r">大模型训练高级工程师 · K12 图片理解 SFT</div><div class="exp-desc">主导 K12 学科图片理解 SFT 数据建设，制定「数据有效性 + 答案正确性」双层标注规范；统筹 10 人团队完成 2W 条数据交付，终验准确率 99.3%；系统归类图文指代偏差、公式识别错误等高频 Badcase，输出归因报告反哺算法侧训练策略。</div></div>
+            <div><div class="exp-r">大模型高级训练工程师 · K12 图片理解 SFT</div><div class="exp-desc">主导 K12 学科图片理解 SFT 数据建设，制定「数据有效性 + 答案正确性」双层标注规范；统筹 10 人团队完成 2W 条数据交付，终验准确率 99.3%；系统归类图文指代偏差、公式识别错误等高频 Badcase，输出归因报告反哺算法侧训练策略。</div></div>
           </div>
           <div class="exp-card reveal delay-4">
             <div><div class="exp-d">2024.10 — 2025.08</div><div class="exp-c">网易有道</div></div>
@@ -388,6 +388,10 @@ section:last-child{border-bottom:none}
 </div>
 <script>
 (function(){
+  /* ── 页面加载回顶 ── */
+  if(window.location.hash){history.replaceState(null,'',window.location.pathname);}
+  window.scrollTo(0,0);
+
   /* ── 粒子 ── */
   var c=document.getElementById('particles');
   for(var i=0;i<40;i++){
