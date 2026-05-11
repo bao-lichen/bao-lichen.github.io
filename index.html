@@ -49,9 +49,14 @@ section:last-child{border-bottom:none}
 .section-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:10px}
 .section-label::after{content:'';flex:1;max-width:40px;height:1px;background:var(--accent)}
 .section-title{font-family:'Noto Serif SC',serif;font-size:36px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:40px}
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:0;padding-bottom:0;position:relative}
-.hero-eyebrow{font-size:clamp(28px,4vw,36px);letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;opacity:0;animation:fadeUp .8s ease .2s forwards;font-family:'Space Grotesk','Noto Serif SC',sans-serif;font-weight:700}
-.hero h1{font-family:'Space Grotesk','Noto Serif SC',sans-serif;font-size:clamp(40px,6vw,72px);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:24px;overflow:hidden}
+
+/* ── Hero ── */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:0;padding-bottom:0;position:relative;gap:60px}
+.hero-left{flex:1;display:flex;flex-direction:column;justify-content:center}
+.hero-eyebrow{font-size:clamp(26px,3.5vw,42px);letter-spacing:2px;color:var(--accent);margin-bottom:20px;opacity:0;animation:fadeUp .8s ease .2s forwards;font-family:'Noto Serif SC',serif;font-weight:700;line-height:1.4}
+.hero-eyebrow .line1{display:block}
+.hero-eyebrow .line2{display:block;font-size:clamp(14px,1.6vw,20px);color:rgba(201,169,110,0.65);letter-spacing:3px;font-weight:400;margin-top:6px}
+.hero h1{font-family:'Space Grotesk','Noto Serif SC',sans-serif;font-size:clamp(36px,5vw,64px);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:24px;overflow:hidden}
 .hero h1 .line{display:block;opacity:0;animation:slideUp .9s cubic-bezier(.4,0,.2,1) forwards}
 .hero h1 .line:nth-child(1){animation-delay:.3s}
 .hero h1 .line:nth-child(2){animation-delay:.5s}
@@ -65,6 +70,89 @@ section:last-child{border-bottom:none}
 @keyframes scrollLine{0%,100%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
 @keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Slideshow ── */
+.hero-slideshow{
+  flex-shrink:0;
+  width:340px;
+  opacity:0;
+  animation:fadeUp .8s ease 1.1s forwards;
+}
+.slideshow-frame{
+  position:relative;
+  width:100%;
+  padding-bottom:120%; /* 竖版比例 */
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid rgba(201,169,110,0.25);
+  box-shadow:0 0 60px rgba(201,169,110,0.08), 0 0 0 1px rgba(255,255,255,0.04);
+  background:#111;
+}
+.slideshow-frame::before{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  border-radius:25px;
+  background:linear-gradient(135deg,rgba(201,169,110,0.3),transparent 50%,rgba(110,198,176,0.15));
+  z-index:0;
+  pointer-events:none;
+}
+.slide{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition:opacity 1s ease;
+  z-index:1;
+}
+.slide.active{opacity:1;z-index:2}
+.slide img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+/* 渐变遮罩底部 */
+.slideshow-frame::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:100px;
+  background:linear-gradient(to top,rgba(10,10,11,0.7),transparent);
+  z-index:3;
+  pointer-events:none;
+  border-radius:0 0 24px 24px;
+}
+/* 进度条 */
+.slideshow-dots{
+  display:flex;
+  justify-content:center;
+  gap:7px;
+  margin-top:16px;
+}
+.sdot{
+  width:20px;height:3px;
+  border-radius:2px;
+  background:rgba(201,169,110,0.2);
+  transition:all .4s ease;
+  cursor:none;
+}
+.sdot.active{
+  background:var(--accent);
+  width:32px;
+}
+/* 进度动画条 */
+.slide-progress{
+  position:absolute;
+  bottom:0;left:0;
+  height:2px;
+  background:var(--accent);
+  z-index:4;
+  border-radius:0 0 0 24px;
+  animation:none;
+}
+@keyframes progress-fill{from{width:0%}to{width:100%}}
+
+/* ── Rest unchanged ── */
 .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.4,0,.2,1),transform .8s cubic-bezier(.4,0,.2,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 .reveal.delay-1{transition-delay:.1s}
@@ -115,7 +203,8 @@ section:last-child{border-bottom:none}
 .footer .heart{color:var(--accent);animation:pulse 1.5s ease infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
 .glow-line{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.3}
-@media(max-width:900px){.about-grid{grid-template-columns:1fr}.exp-card{grid-template-columns:1fr;gap:8px}.projects-grid{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}}
+@media(max-width:1100px){.hero-slideshow{width:280px}}
+@media(max-width:900px){.hero{flex-direction:column;min-height:auto;padding:80px 0 40px;gap:40px}.hero-slideshow{width:100%;max-width:360px;align-self:center}.about-grid{grid-template-columns:1fr}.exp-card{grid-template-columns:1fr;gap:8px}.projects-grid{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}}
 @media(max-width:768px){body{cursor:auto}.cursor,.cursor-dot{display:none}.sidebar{width:100%;min-height:auto;position:relative;padding:0 16px}.sidebar-inner{padding:24px 0 16px;flex-direction:row;flex-wrap:wrap;align-items:center;gap:16px}.avatar-zone{margin-bottom:0;flex-direction:row;gap:14px}.avatar-ring{width:50px;height:50px;margin-bottom:0}.avatar-ring-inner{font-size:22px}.sidebar-name{font-size:15px}.sidebar-sub{display:none}.sidebar-nav{flex-direction:row;flex-wrap:wrap}.nav-item{padding:7px 10px;font-size:12px}.sidebar-social{padding:0;border-top:none}.main{margin-left:0;padding:0 20px 40px}.hero h1{font-size:36px}.section-title{font-size:28px}}
   </style>
 </head>
@@ -140,33 +229,59 @@ section:last-child{border-bottom:none}
         <a href="#publications" class="nav-item"><span class="n">▸</span><span class="t">Publications</span></a>
         <a href="#contact" class="nav-item"><span class="n">▸</span><span class="t">Contact</span></a>
       </nav>
-      <div class="sidebar-social">
-        <a href="#" class="soc" title="GitHub">🐙</a>
-        <a href="#" class="soc" title="Twitter">𝕏</a>
-        <a href="#" class="soc" title="Email">✉</a>
-      </div>
+
     </div>
   </aside>
   <main class="main">
     <section class="hero" id="hero">
-      <div class="hero-eyebrow">Welcome to my world</div>
-      
-      <p class="hero-desc">爱运动 · 爱音乐 · 爱生活</p>
-      <div class="hero-tags">
-        <span class="htag">🏃 运动</span>
-        <span class="htag">🎸 音乐</span>
-        <span class="htag">💻 技术</span>
-        <span class="htag">✈️ 旅行</span>
+      <!-- 左侧文字 -->
+      <div class="hero-left">
+        <div class="hero-eyebrow">
+          <span class="line1">我就是我</span>
+          <span class="line2">是颜色不一样的烟火</span>
+        </div>
+        <p class="hero-desc">爱运动 · 爱音乐 · 爱生活</p>
+        <div class="hero-tags">
+          <span class="htag">🏃 运动</span>
+          <span class="htag">🎸 音乐</span>
+          <span class="htag">💻 技术</span>
+          <span class="htag">✈️ 旅行</span>
+        </div>
+        <div class="hero-scroll">scroll</div>
       </div>
-      <div class="hero-scroll">scroll</div>
+
+      <!-- 右侧轮播相册 -->
+      <div class="hero-slideshow">
+        <div class="slideshow-frame" id="slideshowFrame">
+          <!-- 在这里添加你的照片 -->
+          <!-- 把照片上传到 GitHub 仓库 photos/ 文件夹，文件名 photo1.jpg / photo2.jpg ... -->
+          <div class="slide active" data-index="0">
+            <img src="photos/photo1.jpg" alt="照片1">
+          </div>
+          <div class="slide" data-index="1">
+            <img src="photos/photo2.jpg" alt="照片2">
+          </div>
+          <div class="slide" data-index="2">
+            <img src="photos/photo3.jpg" alt="照片3">
+          </div>
+          <div class="slide" data-index="3">
+            <img src="photos/photo4.jpg" alt="照片4">
+          </div>
+          <!-- 底部进度条 -->
+          <div class="slide-progress" id="slideProgress"></div>
+        </div>
+        <!-- 小圆点指示器 -->
+        <div class="slideshow-dots" id="slideshowDots"></div>
+      </div>
     </section>
+
     <div class="glow-line"></div>
     <section id="about">
       <div class="section-label reveal">01 / About</div>
       <h2 class="section-title reveal delay-1">我是谁</h2>
       <div class="about-grid">
         <div class="about-text reveal delay-2">
-          <p>我叫包黎晨，对软件开发和技术创新充满热情，目前走在不断探索AI的路上。</p>
+          <p>我叫包黎晨，对技术创新充满热情，目前走在不断探索AI的路上。</p>
           <p>我热爱生活，喜欢在运动中释放压力——篮球、跑步、游泳都是我的日常。在音乐方面，我弹吉他，听各种风格的音乐，相信运动和音乐都能给人带来灵感和力量。</p>
           <p>在这个网站上，你可以看到我的一些项目作品、学习笔记和技术分享，欢迎交流探讨！</p>
         </div>
@@ -184,16 +299,16 @@ section:last-child{border-bottom:none}
         <h2 class="section-title reveal delay-1">经历</h2>
         <div class="exp-list">
           <div class="exp-card reveal delay-2">
-            <div><div class="exp-d">2024 — 至今</div><div class="exp-c">Freelance</div></div>
-            <div><div class="exp-r">自由开发者</div><div class="exp-desc">为个人客户和小团队开发 Web 应用和自动化工具，涵盖前端开发、后端 API 和部署运维全栈流程。</div></div>
+            <div><div class="exp-d">2025.10 — 2026.03</div><div class="exp-c">网易有道</div></div>
+            <div><div class="exp-r">大模型训练高级工程师 · 文生图训练数据构建与评测</div><div class="exp-desc">主导子曰大模型文生图 SFT 数据全链路建设，完成 4W 条数据交付，终验准确率 96.5%；基于 Coze 搭建图片描述自动化工作流，单条耗时从 5 分钟压缩至 2 分钟，人效提升近 3 倍；搭建双维评测框架完成 SFT 前后对比，首轮版本综合赢率 68%。</div></div>
           </div>
           <div class="exp-card reveal delay-3">
-            <div><div class="exp-d">2023 — 2024</div><div class="exp-c">XX 大学</div></div>
-            <div><div class="exp-r">校园技术社团负责人</div><div class="exp-desc">组织技术分享会、编程竞赛和 workshops，带领团队完成多个校园信息化项目，服务超过 500 名同学。</div></div>
+            <div><div class="exp-d">2025.08 — 2025.10</div><div class="exp-c">网易有道</div></div>
+            <div><div class="exp-r">大模型高级训练工程师 · K12 图片理解 SFT</div><div class="exp-desc">主导 K12 学科图片理解 SFT 数据建设，制定「数据有效性 + 答案正确性」双层标注规范；统筹 10 人团队完成 2W 条数据交付，终验准确率 99.3%；系统归类图文指代偏差、公式识别错误等高频 Badcase，输出归因报告反哺算法侧训练策略。</div></div>
           </div>
           <div class="exp-card reveal delay-4">
-            <div><div class="exp-d">2022 — 2023</div><div class="exp-c">XX 科技公司</div></div>
-            <div><div class="exp-r">软件开发实习生</div><div class="exp-desc">参与公司核心产品的功能模块开发，负责前端组件设计与实现，积累了团队协作和敏捷开发的实战经验。</div></div>
+            <div><div class="exp-d">2024.10 — 2025.08</div><div class="exp-c">网易有道</div></div>
+            <div><div class="exp-r">大模型训练工程师 · K12 多轮对话 SFT</div><div class="exp-desc">参与子曰大模型 K12 场景多轮对话 SFT 建设，完成 11W 条数据标注，个人准确率 99.5%，小组排名第一；按「安全 / 指令 / 内容 / 语言」四维度打标改写，横跨 9 个学科子项目持续无返工交付；识别上下文遗忘、角色漂移等高频问题反哺规则迭代。</div></div>
           </div>
         </div>
       </div>
@@ -208,8 +323,8 @@ section:last-child{border-bottom:none}
             <div class="proj-card reveal delay-1">
               <div class="proj-img" style="background:linear-gradient(135deg,#0f1a1a,#0d2d1f)">📋</div>
               <div class="proj-body">
-<div class="proj-title">模型评测集</div>
-              <div class="proj-desc">面向 K12 教育场景的模型评测集，每日自动更新，支持按学科、能力类型、年级筛选。</div>
+                <div class="proj-title">模型评测集</div>
+                <div class="proj-desc">面向 K12 教育场景的模型评测集，每日自动更新，支持按学科、能力类型、年级筛选。</div>
                 <div class="proj-tags"><span class="proj-tag">Python</span><span class="proj-tag">GitHub Actions</span><span class="proj-tag">MiMo</span></div>
               </div>
             </div>
@@ -226,29 +341,29 @@ section:last-child{border-bottom:none}
       </div>
     </section>
     <section id="publications">
-  <div class="glow-line reveal"></div>
-  <div style="padding-top:80px">
-    <div class="section-label reveal">05 / Publications</div>
-    <h2 class="section-title reveal delay-1">AI 资讯日报</h2>
-    <p class="section-desc reveal delay-2" style="color:var(--text-muted);margin-bottom:2rem;line-height:1.8;">
-      每天自动抓取 36氪、IT之家、量子位、HuggingFace 的最新 AI 资讯，持续归档更新。
-    </p>
-    <a href="ai-news.html" style="text-decoration:none;">
-      <div class="proj-card reveal delay-2" style="max-width:480px;">
-        <div class="proj-img" style="background:linear-gradient(135deg,#1a1508,#3d2d08)">📰</div>
-        <div class="proj-body">
-          <div class="proj-title">AI 资讯日报</div>
-          <div class="proj-desc">每日自动抓取四大 AI 媒体资讯，支持日期归档翻看，持续更新中。</div>
-          <div class="proj-tags">
-            <span class="proj-tag">Python</span>
-            <span class="proj-tag">GitHub Actions</span>
-            <span class="proj-tag">RSS</span>
+      <div class="glow-line reveal"></div>
+      <div style="padding-top:80px">
+        <div class="section-label reveal">05 / Publications</div>
+        <h2 class="section-title reveal delay-1">AI 资讯日报</h2>
+        <p class="section-desc reveal delay-2" style="color:var(--text-muted);margin-bottom:2rem;line-height:1.8;">
+          每天自动抓取 36氪、IT之家、量子位、HuggingFace 的最新 AI 资讯，持续归档更新。
+        </p>
+        <a href="ai-news.html" style="text-decoration:none;">
+          <div class="proj-card reveal delay-2" style="max-width:480px;">
+            <div class="proj-img" style="background:linear-gradient(135deg,#1a1508,#3d2d08)">📰</div>
+            <div class="proj-body">
+              <div class="proj-title">AI 资讯日报</div>
+              <div class="proj-desc">每日自动抓取四大 AI 媒体资讯，支持日期归档翻看，持续更新中。</div>
+              <div class="proj-tags">
+                <span class="proj-tag">Python</span>
+                <span class="proj-tag">GitHub Actions</span>
+                <span class="proj-tag">RSS</span>
+              </div>
+            </div>
           </div>
-        </div>
+        </a>
       </div>
-    </a>
-  </div>
-</section>
+    </section>
     <section id="contact">
       <div class="glow-line reveal"></div>
       <div style="padding-top:80px">
@@ -273,6 +388,7 @@ section:last-child{border-bottom:none}
 </div>
 <script>
 (function(){
+  /* ── 粒子 ── */
   var c=document.getElementById('particles');
   for(var i=0;i<40;i++){
     var p=document.createElement('div');
@@ -284,21 +400,79 @@ section:last-child{border-bottom:none}
     p.style.width=p.style.height=(1+Math.random()*2)+'px';
     c.appendChild(p);
   }
+
+  /* ── 鼠标 ── */
   var cursor=document.getElementById('cursor');
   var dot=document.getElementById('cursorDot');
   var mx=0,my=0,cx=0,cy=0;
   document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
   function tick(){cx+=(mx-cx)*0.18;cy+=(my-cy)*0.18;dot.style.left=mx+'px';dot.style.top=my+'px';cursor.style.left=cx+'px';cursor.style.top=cy+'px';requestAnimationFrame(tick);}
   tick();
-  var hov=document.querySelectorAll('a,button,.proj-card,.contact-card,.htag,.pub-card,.exp-card');
+  var hov=document.querySelectorAll('a,button,.proj-card,.contact-card,.htag,.pub-card,.exp-card,.sdot');
   hov.forEach(function(el){el.addEventListener('mouseenter',function(){cursor.classList.add('hover')});el.addEventListener('mouseleave',function(){cursor.classList.remove('hover')});});
+
+  /* ── 滚动显示 ── */
   var els=document.querySelectorAll('.reveal');
   var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
   els.forEach(function(el){io.observe(el);});
+
+  /* ── 导航高亮 ── */
   var secs=document.querySelectorAll('section[id]');
   var navs=document.querySelectorAll('.nav-item');
   function set(){var cur='';secs.forEach(function(s){if(window.scrollY>=s.offsetTop-120)cur=s.id;});navs.forEach(function(n){n.classList.remove('active');if(n.getAttribute('href')==='#'+cur)n.classList.add('active');});}
   window.addEventListener('scroll',set,{passive:true});set();
+
+  /* ── 轮播相册 ── */
+  var slides=document.querySelectorAll('.slide');
+  var dotsEl=document.getElementById('slideshowDots');
+  var progressEl=document.getElementById('slideProgress');
+  var total=slides.length;
+  var current=0;
+  var interval=4000; // 每张停留4秒
+  var timer=null;
+
+  // 生成小点
+  for(var d=0;d<total;d++){
+    var dot2=document.createElement('div');
+    dot2.className='sdot'+(d===0?' active':'');
+    dot2.setAttribute('data-i',d);
+    dot2.addEventListener('click',(function(idx){
+      return function(){goTo(idx);resetTimer();};
+    })(d));
+    dotsEl.appendChild(dot2);
+  }
+
+  function goTo(n){
+    slides[current].classList.remove('active');
+    dotsEl.children[current].classList.remove('active');
+    current=n;
+    slides[current].classList.add('active');
+    dotsEl.children[current].classList.add('active');
+    // 重置进度条动画
+    progressEl.style.animation='none';
+    progressEl.offsetHeight; // reflow
+    progressEl.style.animation='progress-fill '+interval+'ms linear forwards';
+  }
+
+  function next(){goTo((current+1)%total);}
+
+  function resetTimer(){
+    clearInterval(timer);
+    timer=setInterval(next,interval);
+  }
+
+  // 启动
+  progressEl.style.animation='progress-fill '+interval+'ms linear forwards';
+  timer=setInterval(next,interval);
+
+  // 触摸滑动支持（手机）
+  var touchX=0;
+  var frame=document.getElementById('slideshowFrame');
+  frame.addEventListener('touchstart',function(e){touchX=e.touches[0].clientX;},{passive:true});
+  frame.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-touchX;
+    if(Math.abs(dx)>40){dx<0?next():goTo((current-1+total)%total);resetTimer();}
+  });
 })();
 </script>
 </body>
